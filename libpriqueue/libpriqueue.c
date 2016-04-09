@@ -11,7 +11,7 @@
 */
 node_t* node_init()
 {
-	node_t* newNode = (node_*) malloc(sizeof(node_t));
+	node_t* newNode = (node_t*) malloc(sizeof(node_t));
 	newNode->item = NULL;
 	newNode->next = NULL;
 	return newNode;
