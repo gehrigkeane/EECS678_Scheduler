@@ -6,7 +6,7 @@ CC = gcc
 INC = -I.
 FLAGS = -Wall -Wextra -Werror -Wno-unused -g
 
-all: simulator queuetest doc/html
+all: simulator queuetest #doc/html
 
 doc/html: doc/Doxyfile libpriqueue/libpriqueue.c libscheduler/libscheduler.c
 	doxygen doc/Doxyfile
