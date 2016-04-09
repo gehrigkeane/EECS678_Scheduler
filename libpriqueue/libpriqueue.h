@@ -9,7 +9,9 @@
 */
 typedef struct _priqueue_t
 {
-
+	int queueSize;
+	node_t* head;
+	int (*comp) (void*, void*);
 } priqueue_t;
 
 
@@ -24,5 +26,27 @@ void * priqueue_remove_at(priqueue_t *q, int index);
 int    priqueue_size     (priqueue_t *q);
 
 void   priqueue_destroy  (priqueue_t *q);
+
+
+//=========================================//
+
+/**
+  Node Data Structure
+*/
+typedef struct _node_t
+{
+	void* item;
+	struct _node_t* next;
+} node_t;
+
+
+node_t* node_init			();
+
+void*	insert				(node_t* n, void* item);
+void*	insert_at			(node_t* n1, node_t* n2);
+void*	get_item			(node_t* n);
+
+void*	node_destroy		(node_t* n);
+
 
 #endif /* LIBPQUEUE_H_ */

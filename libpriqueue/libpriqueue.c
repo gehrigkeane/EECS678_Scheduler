@@ -6,6 +6,65 @@
 
 #include "libpriqueue.h"
 
+/**
+	Initializes the node_t data structure.
+*/
+node_t* node_init()
+{
+	node_t* newNode = (node_*) malloc(sizeof(node_t));
+	newNode->item = NULL;
+	newNode->next = NULL;
+	return newNode;
+}
+
+/**
+	
+*/
+void* insert(node_t* n, void* item)
+{
+	void* oldItem = n->item;
+	n->item = item;
+	return oldItem;
+}
+
+/**
+	
+*/
+void* insert_at(node_t* n1, node_t* n2)
+{
+	node_t* p = n->next;
+	n->next = n2;
+	return (void*) p;
+}
+
+/**
+	
+*/
+void* get_item(node_t* n)
+{
+	if (n == NULL)
+	{
+		// All nodes must contain an item
+		printf("Error: empty node");
+		exit(1);
+	}
+	return n->item;
+}
+
+/**
+	Destroys and frees all memory associated with n.
+
+	@param n a pointer to an instance of the node_t data structure
+	@return the item from n
+*/
+void* node_destroy(node_t* n)
+{
+	void* itemFromDeletedNode = n->item;
+	free(n);
+	n = NULL;
+	return itemFromDeletedNode;
+}
+
 
 /**
 	Initializes the priqueue_t data structure.
@@ -19,7 +78,9 @@
  */
 void priqueue_init(priqueue_t *q, int(*comparer)(const void *, const void *))
 {
-
+	q->head = NULL;
+	q->size = 0;
+	q->comp = comparer;
 }
 
 
@@ -46,7 +107,7 @@ int priqueue_offer(priqueue_t *q, void *ptr)
  */
 void *priqueue_peek(priqueue_t *q)
 {
-	return NULL;
+	return (priqueue_size(q) == 0) ? NULL : q->head->item;
 }
 
 
@@ -117,7 +178,7 @@ void *priqueue_remove_at(priqueue_t *q, int index)
  */
 int priqueue_size(priqueue_t *q)
 {
-	return 0;
+	return q->size;
 }
 
 
@@ -128,5 +189,9 @@ int priqueue_size(priqueue_t *q)
  */
 void priqueue_destroy(priqueue_t *q)
 {
-
+	while (priqueue_size(q) > 0)
+	{
+		// Keep removing the head of the queue until empty
+		priqueue_poll(q);
+	}
 }
