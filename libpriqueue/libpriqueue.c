@@ -32,8 +32,8 @@ void* insert(node_t* n, void* item)
 */
 void* insert_at(node_t* n1, node_t* n2)
 {
-	node_t* p = n->next;
-	n->next = n2;
+	node_t* p = n1->next;
+	n1->next = n2;
 	return (void*) p;
 }
 
@@ -93,6 +93,21 @@ void priqueue_init(priqueue_t *q, int(*comparer)(const void *, const void *))
  */
 int priqueue_offer(priqueue_t *q, void *ptr)
 {
+	node_t* n = node_init();
+	insert(n, ptr);
+
+	if (priqueue_size(q) == 0 || q->comp(n->item, q->head->item) < 0)
+	{
+		// Store at the front of the queue
+		q->head = n;
+		q->queueSize++;
+		return 0;
+	}
+
+	// TODO: Go through the queue
+	node_t* currentNode;
+	
+
 	return -1;
 }
 
@@ -121,6 +136,8 @@ void *priqueue_peek(priqueue_t *q)
  */
 void *priqueue_poll(priqueue_t *q)
 {
+	// TODO
+	q;
 	return NULL;
 }
 
@@ -136,6 +153,9 @@ void *priqueue_poll(priqueue_t *q)
  */
 void *priqueue_at(priqueue_t *q, int index)
 {
+	// TODO
+	q;
+	index;
 	return NULL;
 }
 
@@ -151,6 +171,9 @@ void *priqueue_at(priqueue_t *q, int index)
  */
 int priqueue_remove(priqueue_t *q, void *ptr)
 {
+	// TODO
+	q;
+	ptr;
 	return 0;
 }
 
@@ -166,6 +189,9 @@ int priqueue_remove(priqueue_t *q, void *ptr)
  */
 void *priqueue_remove_at(priqueue_t *q, int index)
 {
+	// TODO
+	q;
+	index;
 	return 0;
 }
 
@@ -178,6 +204,8 @@ void *priqueue_remove_at(priqueue_t *q, int index)
  */
 int priqueue_size(priqueue_t *q)
 {
+	// TODO
+	q;
 	return q->queueSize;
 }
 
