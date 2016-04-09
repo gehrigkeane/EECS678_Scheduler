@@ -17,19 +17,38 @@ node_t* node_init()
 	return newNode;
 }
 
+/**
+	
+*/
 void* insert(node_t* n, void* item)
 {
-
+	void* oldItem = n->item;
+	n->item = item;
+	return oldItem;
 }
 
+/**
+	
+*/
 void* insert_at(node_t* n1, node_t* n2)
 {
-
+	node_t* p = n->next;
+	n->next = n2;
+	return (void*) p;
 }
 
+/**
+	
+*/
 void* get_item(node_t* n)
 {
-
+	if (n == NULL)
+	{
+		// All nodes must contain an item
+		printf("Error: empty node");
+		exit(1);
+	}
+	return n->item;
 }
 
 /**
