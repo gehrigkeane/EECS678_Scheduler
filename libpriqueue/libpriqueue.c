@@ -42,6 +42,7 @@ void* node_destroy(node_t* n)
 {
 	void* itemFromDeletedNode = n->item;
 	free(n);
+	n = NULL;
 	return itemFromDeletedNode;
 }
 
