@@ -6,6 +6,45 @@
 
 #include "libpriqueue.h"
 
+/**
+	Initializes the node_t data structure.
+*/
+node_t* node_init()
+{
+	node_t* newNode = (node_*) malloc(sizeof(node_t));
+	newNode->item = NULL;
+	newNode->next = NULL;
+	return newNode;
+}
+
+void* insert(node_t* n, void* item)
+{
+
+}
+
+void* insert_at(node_t* n1, node_t* n2)
+{
+
+}
+
+void* get_item(node_t* n)
+{
+
+}
+
+/**
+	Destroys and frees all memory associated with n.
+
+	@param n a pointer to an instance of the node_t data structure
+	@return the item from n
+*/
+void* node_destroy(node_t* n)
+{
+	void* itemFromDeletedNode = n->item;
+	free(n);
+	return itemFromDeletedNode;
+}
+
 
 /**
 	Initializes the priqueue_t data structure.
