@@ -79,7 +79,7 @@ void* node_destroy(node_t* n)
 void priqueue_init(priqueue_t *q, int(*comparer)(const void *, const void *))
 {
 	q->head = NULL;
-	q->size = 0;
+	q->queueSize = 0;
 	q->comp = comparer;
 }
 
