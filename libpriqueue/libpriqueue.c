@@ -178,7 +178,7 @@ void *priqueue_remove_at(priqueue_t *q, int index)
  */
 int priqueue_size(priqueue_t *q)
 {
-	return q->size;
+	return q->queueSize;
 }
 
 
