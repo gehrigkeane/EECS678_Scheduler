@@ -78,7 +78,9 @@ void* node_destroy(node_t* n)
  */
 void priqueue_init(priqueue_t *q, int(*comparer)(const void *, const void *))
 {
-
+	q->head = NULL;
+	q->size = 0;
+	q->comp = comparer;
 }
 
 
@@ -105,7 +107,7 @@ int priqueue_offer(priqueue_t *q, void *ptr)
  */
 void *priqueue_peek(priqueue_t *q)
 {
-	return NULL;
+	return (priqueue_size(q) == 0) ? NULL : q->head->item;
 }
 
 
@@ -176,7 +178,7 @@ void *priqueue_remove_at(priqueue_t *q, int index)
  */
 int priqueue_size(priqueue_t *q)
 {
-	return 0;
+	return q->size;
 }
 
 
@@ -187,5 +189,9 @@ int priqueue_size(priqueue_t *q)
  */
 void priqueue_destroy(priqueue_t *q)
 {
-
+	while (priqueue_size(q) > 0)
+	{
+		// Keep removing the head of the queue until empty
+		priqueue_poll(q);
+	}
 }
