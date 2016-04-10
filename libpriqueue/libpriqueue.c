@@ -18,7 +18,10 @@ node_t* node_init()
 }
 
 /**
-	
+	Changes the item inside a node.
+
+	@param n the node
+	@param item the item to replace n's item with
 */
 void* insert(node_t* n, void* item)
 {
@@ -41,7 +44,9 @@ void* insert_at(node_t* n1, node_t* n2)
 }
 
 /**
-	
+	Returns the item for the specified node.
+
+	@param n the node with the desired item
 */
 void* get_item(node_t* n)
 {
