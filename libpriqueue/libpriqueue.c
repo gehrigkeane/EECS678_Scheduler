@@ -164,10 +164,10 @@ void *priqueue_poll(priqueue_t *q)
 	}
 	else
 	{
-		node_t* n = q->head;
-		q->head = n->next;
+		node_t* nodeToDelete = q->head;
+		q->head = nodeToDelete->next;
 		q->queueSize--;
-		return node_destroy(n);
+		return node_destroy(nodeToDelete);
 	}
 }
 
@@ -183,10 +183,24 @@ void *priqueue_poll(priqueue_t *q)
  */
 void *priqueue_at(priqueue_t *q, int index)
 {
-	// TODO
-	q;
-	index;
-	return NULL;
+	if (index < 0 || index > priqueue_size(q))
+	{
+		// Index out of bounds
+		return NULL;
+	}
+	else
+	{
+		// Traverse the queue to get the correct item
+		node_t* currentNode = q->head;
+		int i = 0;
+		while (i < index)
+		{
+			currentNode = currentNode->next;
+			i++;
+		}
+
+		return currentNode->item;
+	}
 }
 
 
@@ -201,10 +215,35 @@ void *priqueue_at(priqueue_t *q, int index)
  */
 int priqueue_remove(priqueue_t *q, void *ptr)
 {
-	// TODO
-	q;
-	ptr;
-	return 0;
+	int numRemoved = 0;
+
+  while (priqueue_size(q) > 0 && ptr == get_item(q->head))
+  {
+		priqueue_poll(q);
+		numRemoved++; 
+  }
+
+  if (priqueue_size(q) > 0)
+  {
+		node_t* currentNode = q->head;
+		while (currentNode->next != NULL)
+		{
+			// Remove any items from the queue matching "ptr"
+	  	if (get_item(currentNode->next) == ptr)
+	  	{
+				node_t* nodeToDelete = currentNode->next;
+				currentNode->next = nodeToDelete->next;
+				q->queueSize--;
+				node_destroy(nodeToDelete);
+				numRemoved++;
+	  	}
+
+	  	// Continue traversing
+	  	currentNode = currentNode->next;
+		}
+  }
+
+  return numRemoved;
 }
 
 
