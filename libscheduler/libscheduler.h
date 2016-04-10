@@ -49,10 +49,21 @@ void	scheduler_show_queue				();
 //	------------------------------------------------------------------------------------------
 //	Custom Helper Functions
 //	------------------------------------------------------------------------------------------
-void	inc_wait							(int t);
-void	inc_resp							(int t);
-void	inc_turn							(int t);
-int		sch_time							(const void * p1, const void * p2);
+void	inc_wait	(int t);
+void	inc_resp	(int t);
+void	inc_turn	(int t);
+void	create_core	(core_t *p, int x);
+void	free_core	(core_t *p);
+void	free_job	(job_t* p);
+void	inc_time	(int t);
+int		get_core	();
+int		is_prempt	();
+int		preempt		(job_t* job);
+int		sch_time	(const void * p1, const void * p2);
+job_t*	create_job	(int j, int a, int r, int pr);
+job_t*	insert_job	(int x, job_t* job);
+job_t*	delete_job	(int core, int id);
+
 
 //	------------------------------------------------------------------------------------------
 //	Global Var/Struct Initializations
