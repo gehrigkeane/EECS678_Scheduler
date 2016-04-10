@@ -10,20 +10,30 @@
 //	------------------------------------------------------------------------------------------
 //	Custom Helper Functions
 //	------------------------------------------------------------------------------------------
-job_t*	create_job	() 					{ job_t* p = ( job_t* )malloc(sizeof(job_t)); return p; }
 void	free_job	(job_t* p)			{ free(p); }
 void	free_core	(core_t *p)			{ free(p->jobs); }
 int		is_prempt	()					{ if ( sch_type == PPRI || sch_type == PSJF ) { return 1; } return 0; }
+int		get_core	()					{	int i;
+											for(i=0;i<cores.cnt;i++) { if ( cores.jobs[i] == NULL ) { return i; } }
+											return -1;
+										}
 void	create_core	(core_t *p, int x)	{	int i;
 											p->cnt = x;
 											p->jobs = ( job_t** )malloc(sizeof(job_t*)*x);
 											for( i=0; i < x; i++) p->jobs[i] = NULL;
 										}
-int		get_core	()					{	int i;
-											for(i=0;i<cores.cnt;i++) { if ( cores.jobs[i] == NULL ) { return i; } }
-											return -1;
-										}
-
+job_t*	create_job	(int j, int a, int r, int pr)
+{
+	job_t* p = ( job_t* )malloc(sizeof(job_t)); 
+	p->arr_t = a;
+	p->run_t = r;
+	p->rem_t = r;
+	p->pri = pr;
+	p->jid = j;
+	p->init_core_t = -1;
+	p->updt_core_t = -1;
+	return p;
+}
 
 job_t* delete_job(int core, int id)
 {
@@ -169,10 +179,27 @@ void scheduler_start_up(int num_cores, scheme_t scheme)
 	@return -1 if no scheduling changes should be made. 
  
  */
-int scheduler_new_job(int jid, int time, int run_t, int pri)
+int scheduler_new_job(int job_number, int time, int running_time, int priority)
 {
+	int i;
+	inc_time(time);
+	job_t* job = create_job(job_number, time, running_time, priority);
+
+	if ( (i = get_core()) != -1 )
+	{
+		insert_job(i,job);
+		return i;
+	}//if
+	else if ( is_prempt() )
+	{
+		i = preempt(job);
+		if ( i == -1 )
+			priqueue_offer(jobs,job);
+		return i;
+	}//else if
+	priqueue_offer(jobs,job);
 	return -1;
-}
+}//scheduler_new_job
 
 
 /**
