@@ -10,11 +10,101 @@
 //	------------------------------------------------------------------------------------------
 //	Custom Helper Functions
 //	------------------------------------------------------------------------------------------
+job_t*	create_job	() 					{ job_t* p = ( job_t* )malloc(sizeof(job_t)); return p; }
+void	free_job	(job_t* p)			{ free(p); }
+void	free_core	(core_t *p)			{ free(p->jobs); }
+int		is_prempt	()					{ if ( sch_type == PPRI || sch_type == PSJF ) { return 1; } return 0; }
+void	create_core	(core_t *p, int x)	{	int i;
+											p->cnt = x;
+											p->jobs = ( job_t** )malloc(sizeof(job_t*)*x);
+											for( i=0; i < x; i++) p->jobs[i] = NULL;
+										}
+int		get_core	()					{	int i;
+											for(i=0;i<cores.cnt;i++) { if ( cores.jobs[i] == NULL ) { return i; } }
+											return -1;
+										}
+
+
+job_t* delete_job(int core, int id)
+{
+	if ( cores.jobs[core]->jid != id )
+	{
+		printf("Delete job failed, invaild job ID");
+		exit(1);
+	}//if - attempt to remove invalid job from core
+
+	job_t* job = cores.jobs[core];
+	job->updt_core_t = -1;
+	cores.jobs[core] = NULL;
+	priqueue_offer(jobs,job);
+	return job;
+}//delete_job
+
+job_t* insert_job(int x, job_t* job)
+{
+	if ( cores.jobs[x] != NULL )
+	{
+		printf("Job insertion failed on core: %d", x);
+		exit(1);
+	}//if - core isn't empty
+
+	cores.jobs[x] = job;
+	job->updt_core_t = cur_t;
+	return job;
+}//insert_job
+
+int preempt(job_t* job)
+{
+	int cmp_n, cmp = 0;
+	int i, x = -1;
+	for ( i=0; i < cores.cnt; i++ )
+	{
+		cmp_n = sch_time(job, cores.jobs[i]);
+		if ( cmp_n < cmp )
+		{
+			cmp = cmp_n;
+			x = i;
+		}//if
+		else if ( cmp_n == cmp )
+		{
+			if ( x != -1 && cores.jobs[x]->arr_t < cores.jobs[i]->arr_t )
+				x = i;
+		}//else if
+	}//for
+
+	// insert job into core list.
+	if ( x >= 0 )
+	{
+		delete_job(x,cores.jobs[x]->jid);
+		insert_job(x,job);
+	}//if
+
+	return x;
+}//preempt
+
+int sch_time(const void * p1v, const void * p2v)
+{
+	job_t* p1 = (job_t*)p1v;
+	job_t* p2 = (job_t*)p2v;
+	int job_arr_t = (int)(p1->arr_t - p2->arr_t);
+	if ( sch_type == FCFS )
+		return job_arr_t;
+	else if ( sch_type == SJF )
+		return ((int)(p1->run_t - p2->run_t) == 0) ? job_arr_t : (int)(p1->run_t - p2->run_t);
+	else if ( sch_type == PSJF )
+		return ((int)(p1->rem_t - p2->rem_t) == 0) ? job_arr_t : (int)(p1->rem_t - p2->rem_t);
+	else if ( sch_type == PRI )
+		return ((int)(p1->pri - p2->pri) == 0) ? job_arr_t : (int)(p1->pri - p2->pri);
+	else if ( sch_type == PPRI )
+		return ((int)(p1->pri - p2->pri) == 0) ? job_arr_t : (int)(p1->pri - p2->pri);
+	return 0;
+}
+
 void inc_time(int t)
 {
 	int i;
 	cur_t = t;
-	for ( i=0 ;i < cores.count; i++ )
+	for ( i=0 ;i < cores.cnt; i++ )
 	{
 		// Catch temp job
 		job_t* job = cores.jobs[i];
@@ -33,6 +123,9 @@ void inc_time(int t)
 		}//if
 	}//for
 }//inc_time
+
+
+
 
 //	------------------------------------------------------------------------------------------
 //	Scheduler Functions

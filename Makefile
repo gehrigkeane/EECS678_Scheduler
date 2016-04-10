@@ -6,7 +6,10 @@ CC = gcc
 INC = -I.
 FLAGS = -Wall -Wextra -Werror -Wno-unused -g
 
-all: simulator queuetest #doc/html
+all: clean simulator queuetest test #doc/html
+
+test:
+	@perl examples.pl
 
 doc/html: doc/Doxyfile libpriqueue/libpriqueue.c libscheduler/libscheduler.c
 	doxygen doc/Doxyfile
