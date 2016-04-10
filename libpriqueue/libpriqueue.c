@@ -28,13 +28,16 @@ void* insert(node_t* n, void* item)
 }
 
 /**
-	
+	Inserts a node directly after another node in the queue.
+
+	@param n1 the node in the queue
+	@parram n2 the node to insert
 */
 void* insert_at(node_t* n1, node_t* n2)
 {
-	node_t* p = n1->next;
+	node_t* loc = n1->next;
 	n1->next = n2;
-	return (void*) p;
+	return (void*) loc;
 }
 
 /**
@@ -42,12 +45,6 @@ void* insert_at(node_t* n1, node_t* n2)
 */
 void* get_item(node_t* n)
 {
-	if (n == NULL)
-	{
-		// All nodes must contain an item
-		printf("Error: empty node");
-		exit(1);
-	}
 	return n->item;
 }
 
@@ -96,19 +93,39 @@ int priqueue_offer(priqueue_t *q, void *ptr)
 	node_t* n = node_init();
 	insert(n, ptr);
 
-	if (priqueue_size(q) == 0 || q->comp(n->item, q->head->item) < 0)
+	if (q->head == NULL 
+		|| q->comp(n->item, q->head->item) < 0)
 	{
 		// Store at the front of the queue
+		insert_at(n, q->head);
 		q->head = n;
 		q->queueSize++;
 		return 0;
 	}
+	else
+	{
+		// Go through the queue and find the place to insert
+		node_t* currentNode = q->head;
+		int i = 0;
+		while (i < priqueue_size(q))
+		{
+			if (currentNode->next == NULL 
+				|| q->comp(n->item, currentNode->next->item) < 0)
+			{
+				insert_at(n, currentNode->next);
+				currentNode->next = n;
+				q->queueSize++;
+				return i;
+			}
+			
+			currentNode = currentNode->next;
+			i++;
+		}
+	}
 
-	// TODO: Go through the queue
-	node_t* currentNode;
-	
-
-	return -1;
+	printf("Error inserting node");
+	exit(1);
+	return -1; // error
 }
 
 
@@ -136,9 +153,17 @@ void *priqueue_peek(priqueue_t *q)
  */
 void *priqueue_poll(priqueue_t *q)
 {
-	// TODO
-	q;
-	return NULL;
+	if (q->queueSize == 0)
+	{
+		return NULL;
+	}
+	else
+	{
+		node_t* n = q->head;
+		q->head = n->next;
+		q->queueSize--;
+		return node_destroy(n);
+	}
 }
 
 
@@ -204,8 +229,6 @@ void *priqueue_remove_at(priqueue_t *q, int index)
  */
 int priqueue_size(priqueue_t *q)
 {
-	// TODO
-	q;
 	return q->queueSize;
 }
 
