@@ -259,10 +259,29 @@ int priqueue_remove(priqueue_t *q, void *ptr)
  */
 void *priqueue_remove_at(priqueue_t *q, int index)
 {
-	// TODO
-	q;
-	index;
-	return 0;
+	if (index < 0 || index > priqueue_size(q))
+	{
+		// Index out of bounds
+		return NULL;
+	}
+	else
+	{
+		// Traverse the queue to remove the correct item
+		node_t* currentNode = q->head;
+		int i = 0;
+		while (i < index)
+		{
+			currentNode = currentNode->next;
+			i++;
+		}
+
+		// Move up other nodes after nodeToDelete
+		node_t* nodeToDelete = currentNode->next;
+		currentNode->next = nodeToDelete->next;
+		q->queueSize--;
+
+		return node_destroy(nodeToDelete);
+	}
 }
 
 
