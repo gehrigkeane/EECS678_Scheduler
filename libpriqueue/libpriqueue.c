@@ -216,34 +216,35 @@ void *priqueue_at(priqueue_t *q, int index)
 int priqueue_remove(priqueue_t *q, void *ptr)
 {
 	int numRemoved = 0;
-
-  while (priqueue_size(q) > 0 && ptr == get_item(q->head))
-  {
+	while (priqueue_size(q) > 0 && ptr == get_item(q->head))
+	{
 		priqueue_poll(q);
-		numRemoved++; 
-  }
+		numRemoved++;
+	}
 
-  if (priqueue_size(q) > 0)
-  {
+	if (priqueue_size(q) > 0)
+	{
 		node_t* currentNode = q->head;
 		while (currentNode->next != NULL)
 		{
 			// Remove any items from the queue matching "ptr"
-	  	if (get_item(currentNode->next) == ptr)
-	  	{
-				node_t* nodeToDelete = currentNode->next;
-				currentNode->next = nodeToDelete->next;
-				q->queueSize--;
-				node_destroy(nodeToDelete);
-				numRemoved++;
-	  	}
+		  	if (get_item(currentNode->next) == ptr)
+		  	{
+					node_t* nodeToDelete = currentNode->next;
+					currentNode->next = nodeToDelete->next;
+					q->queueSize--;
+					node_destroy(nodeToDelete);
+					numRemoved++;
+		  	}
 
-	  	// Continue traversing
-	  	currentNode = currentNode->next;
+		  	else
+		  	{
+		  		// Continue traversing
+		  		currentNode = currentNode->next;
+		  	}
 		}
-  }
-
-  return numRemoved;
+	}
+	return numRemoved;
 }
 
 
