@@ -143,8 +143,11 @@ void inc_time(int t)
 */
 void scheduler_start_up(int num_cores, scheme_t scheme)
 {
-
-}
+	jobs = (priqueue_t*)malloc(sizeof(priqueue_t));
+	priqueue_init(jobs,&scheme);
+	create_core(&cores,cores_n);
+	inc_time(0);
+}//scheduler_start_up
 
 
 /**

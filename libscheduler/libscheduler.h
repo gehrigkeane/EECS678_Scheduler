@@ -36,7 +36,7 @@ typedef struct _core_t_
 //
 typedef enum {FCFS = 0, SJF, PSJF, PRI, PPRI, RR} scheme_t;
 
-void	scheduler_start_up					(int cores, scheme_t scheme);
+void	scheduler_start_up					(int cores_n, scheme_t scheme);
 int		scheduler_new_job					(int job_number, int time, int running_time, int priority);
 int		scheduler_job_finished				(int core_id, int job_number, int time);
 int		scheduler_quantum_expired			(int core_id, int time);
