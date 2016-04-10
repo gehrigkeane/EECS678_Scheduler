@@ -218,21 +218,23 @@ int scheduler_new_job(int job_number, int time, int running_time, int priority)
  */
 int scheduler_job_finished(int core_id, int job_number, int time)
 {
+	// Increment Time
 	inc_time(time);
 
+	// Process job termination
 	job_t* p = delete_job(core_id,job_number);
 	priqueue_remove(jobs,p);
 	inc_wait(cur_t - p->arr_t - p->run_t);
 	inc_turn(cur_t - p->arr_t);
 	free_job(p);
+	
+	// Schedule new job
 	p = priqueue_poll(jobs);
-
 	if ( p != NULL )
 	{
 		insert_job(core_id,p);
-		return p->job_number;
+		return p->jid;
 	}//if
-
 	return -1;
 }//scheduler_job_finished
 
@@ -251,6 +253,19 @@ int scheduler_job_finished(int core_id, int job_number, int time)
  */
 int scheduler_quantum_expired(int core_id, int time)
 {
+	// Increment Time
+	inc_time(time);
+
+	// Process quantumn rollover
+	delete_job(core_id,cores.jobs[core_id]->jid);
+	
+	// Schedule new job
+	job_t* p = priqueue_poll(jobs);
+	if ( p != NULL )
+	{
+		insert_job(core_id,p);
+		return p->jid;
+	}//if
 	return -1;
 }
 
